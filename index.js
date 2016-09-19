@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.11
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -13,6 +13,7 @@
 
 (function () {
     'use strict';
+    console.log("updated");
     /* Zepto v1.2.0 - zepto event ajax form ie - zeptojs.com/license */
     (function (global, factory) {
         if (typeof define === 'function' && define.amd)
