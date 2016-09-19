@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 (function () {
-    console.log("updated");
+    console.log("updated2");
     /* Zepto v1.2.0 - zepto event ajax form ie - zeptojs.com/license */
     (function (global, factory) {
         if (typeof define === 'function' && define.amd)
