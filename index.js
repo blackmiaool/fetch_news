@@ -12,7 +12,6 @@
 // ==/UserScript==
 
 (function () {
-    'use strict';
     console.log("updated");
     /* Zepto v1.2.0 - zepto event ajax form ie - zeptojs.com/license */
     (function (global, factory) {
