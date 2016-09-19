@@ -1993,7 +1993,7 @@
 
     //add trigger btn
     var initStyle = ".theft-btn{display:block;padding:10px;border: 1px solid #e6e6e6;text-align:center;cursor:pointer;";
-    var $btn = $("<a class='theft-btn' onclick='homeTheft()'>盗图</a>");
+    var $btn = $("<a class='theft-btn' onclick='homeTheft()'>移植</a>");
     switch (site.toString()) {
     case "ifanr":
         initStyle += "background-color:white;}";
