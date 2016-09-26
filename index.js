@@ -7,6 +7,8 @@
 // @include      http://www.ifanr.com/*
 // @include      http://bbs.xiaomi.cn/*
 // @include      http://www.igao7.com/news/*
+// @include      https://mp.weixin.qq.com/*
+// @include      http://mp.weixin.qq.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
 // ==/UserScript==
@@ -1833,10 +1835,10 @@
         })()
         return Zepto
     }));
-    
-    
-    
-    
+
+
+
+
     var site = new String(location.hostname.match(/\w+\.(\w*)/)[1]);
     site[site] = 1;
     unsafeWindow.homeTheft = function () {
@@ -1860,6 +1862,9 @@
             break;
         case "igao7":
             $article = $(".content");
+            break;
+        case "weixin":
+            $article = $("#js_content");
             break;
         }
         $article.find("script,link,style").remove();
@@ -1970,8 +1975,40 @@
 
                 }
             });
+        } else if (site.weixin) {
+            registerHandler("P", function ($dom) {
+                if ($dom.find("img").length) { //image
+                    $dom = $dom.find("img");
+                    var url = $dom.data("src");
+                    output.push({
+                        name: "pic_link_full_default_empty_gap",
+                        data: {
+                            src: url
+                        }
+                    });
+                } else {
+                    if ($dom.find("*").length > 1) {
+                        $dom.find("*").css({
+                            "font-size": "16px",
+                            "line-height": "28.8px"
+                        });
+                        commonOutput($dom);
+                    } else {
+                        var text = $dom.text();
+                        if (text) {
+                            output.push({
+                                name: "two_level_p",
+                                data: {
+                                    data: text
+                                },
+                            });
+                        }
+                    }
 
 
+
+                }
+            });
         }
         $article.children().each(function () {
             var $dom = $(this);
@@ -1992,7 +2029,7 @@
     };
 
     //add trigger btn
-    var initStyle = ".theft-btn{display:block;padding:10px;border: 1px solid #e6e6e6;text-align:center;cursor:pointer;";
+    var initStyle = ".theft-btn{display:block;padding:10px;border: 1px solid #e6e6e6;text-align:center;cursor:pointer;color:black;";
     var $btn = $("<a class='theft-btn' onclick='homeTheft()'>移植</a>");
     switch (site.toString()) {
     case "ifanr":
@@ -2006,6 +2043,13 @@
     case "igao7":
         initStyle += "position:absolute;left:0;right:0;}";
         $(".gotoBar").append($btn);
+        break;
+    case "weixin":
+        initStyle += "display:inline-block;font-size: 17px;}";
+        $(".rich_media_meta_list").append($btn);
+        $btn.on("click", function () {
+            homeTheft();
+        });
         break;
     }
     GM_addStyle(initStyle);
