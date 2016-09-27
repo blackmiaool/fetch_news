@@ -1992,6 +1992,10 @@
                             "font-size": "16px",
                             "line-height": "28.8px"
                         });
+                        $dom.css({
+                            "font-size": "16px",
+                            "line-height": "28.8px"
+                        });
                         commonOutput($dom);
                     } else {
                         var text = $dom.text();
