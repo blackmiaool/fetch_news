@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      0.14
+// @version      0.15
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
