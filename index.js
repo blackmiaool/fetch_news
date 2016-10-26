@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      0.15
+// @version      0.16
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -9,6 +9,8 @@
 // @include      http://www.igao7.com/news/*
 // @include      https://mp.weixin.qq.com/*
 // @include      http://mp.weixin.qq.com/*
+// @include      http://www.miui.com/*
+// @include      https://www.miui.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
 // ==/UserScript==
@@ -1838,7 +1840,7 @@
 
 
 
-
+    var $=Zepto;
     var site = new String(location.hostname.match(/\w+\.(\w*)/)[1]);
     site[site] = 1;
     unsafeWindow.homeTheft = function () {
@@ -1865,6 +1867,10 @@
             break;
         case "weixin":
             $article = $("#js_content");
+        case "miui":
+            $article = $(".pct .t_f").eq(0);
+            console.log(123)
+            $article.html($article.html().replace(/<br>/g,"<p>"));
             break;
         }
         $article.find("script,link,style").remove();
@@ -2013,6 +2019,57 @@
 
                 }
             });
+        }else if (site.miui) {
+            registerHandler("BR", function ($dom) {
+            });
+            
+            registerHandler("P", function ($dom) {
+                if ($dom.find("img").length) { //image
+                    $dom = $dom.find("img");
+                    var urlRaw=$dom.attr("zoomfile");
+                    var url = urlRaw
+                    if(!url.match(/thumb/)){
+                        url+=".thumb.";
+                        if(urlRaw.match(/\.(\w+)$/)){
+                            url+=urlRaw.match(/\.(\w+)$/)[1];
+                        }else{
+                            url+="jpg";
+                        }   
+                        console.log(url)
+                    }
+                    output.push({
+                        name: "pic_link_full_default_empty_gap",
+                        data: {
+                            src: url
+                        }
+                    });
+                } else {
+                    if ($dom.find("*").length > 1) {
+                        $dom.find("*").css({
+                            "font-size": "16px",
+                            "line-height": "28.8px"
+                        });
+                        $dom.css({
+                            "font-size": "16px",
+                            "line-height": "28.8px"
+                        });
+                        commonOutput($dom);
+                    } else {
+                        var text = $dom.text();
+                        if (text.trim()) {
+                            output.push({
+                                name: "two_level_p",
+                                data: {
+                                    data: text
+                                },
+                            });
+                        }
+                    }
+
+
+
+                }
+            });
         }
         $article.children().each(function () {
             var $dom = $(this);
@@ -2052,6 +2109,14 @@
         initStyle += "display:inline-block;font-size: 17px;}";
         $(".rich_media_meta_list").append($btn);
         $btn.on("click", function () {
+            homeTheft();
+        });
+        break;
+    case "miui":
+        initStyle += "display:inline-block;font-size: 17px;padding-top:0px;padding-bottom:0px;font-size:16px;}";
+        $(".authi").append($btn);
+        $btn.on("click", function () {
+            a.html(a.html().replace(/<br>/g,"<p>"));
             homeTheft();
         });
         break;
