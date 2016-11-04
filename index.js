@@ -11,6 +11,8 @@
 // @include      http://mp.weixin.qq.com/*
 // @include      http://www.miui.com/*
 // @include      https://www.miui.com/*
+// @include      http://www.leiphone.com/*
+// @include      https://www.leiphone.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
 // ==/UserScript==
@@ -1840,7 +1842,7 @@
 
 
 
-    var $=Zepto;
+    var $ = Zepto;
     var site = new String(location.hostname.match(/\w+\.(\w*)/)[1]);
     site[site] = 1;
     unsafeWindow.homeTheft = function () {
@@ -1869,8 +1871,10 @@
             $article = $("#js_content");
         case "miui":
             $article = $(".pct .t_f").eq(0);
-            console.log(123)
-            $article.html($article.html().replace(/<br>/g,"<p>"));
+            $article.html($article.html().replace(/<br>/g, "<p>"));
+            break;
+        case "leiphone":
+            $article = $(".article-left>div").eq(0);
             break;
         }
         $article.find("script,link,style").remove();
@@ -2019,22 +2023,21 @@
 
                 }
             });
-        }else if (site.miui) {
-            registerHandler("BR", function ($dom) {
-            });
-            
+        } else if (site.miui) {
+            registerHandler("BR", function ($dom) {});
+
             registerHandler("P", function ($dom) {
                 if ($dom.find("img").length) { //image
                     $dom = $dom.find("img");
-                    var urlRaw=$dom.attr("zoomfile");
+                    var urlRaw = $dom.attr("zoomfile");
                     var url = urlRaw
-                    if(!url.match(/thumb/)){
-                        url+=".thumb.";
-                        if(urlRaw.match(/\.(\w+)$/)){
-                            url+=urlRaw.match(/\.(\w+)$/)[1];
-                        }else{
-                            url+="jpg";
-                        }   
+                    if (!url.match(/thumb/)) {
+                        url += ".thumb.";
+                        if (urlRaw.match(/\.(\w+)$/)) {
+                            url += urlRaw.match(/\.(\w+)$/)[1];
+                        } else {
+                            url += "jpg";
+                        }
                         console.log(url)
                     }
                     output.push({
@@ -2068,6 +2071,52 @@
 
 
 
+                }
+            });
+        } else if (site.leiphone) {
+            registerHandler("P", function ($dom) {
+                if ($dom.find("img").length) { //image
+                    $dom = $dom.find("img");
+                    var url = $dom.attr("src");
+                    output.push({
+                        name: "pic_link_full_default_empty_gap",
+                        data: {
+                            src: url
+                        }
+                    });
+                } else {
+                    var text = $dom.text();
+                    if (text) {
+                        output.push({
+                            name: "two_level_p",
+                            data: {
+                                data: text
+                            },
+                        });
+                    }
+
+                }
+            });
+            registerHandler("H2", function ($dom) {
+                var html = $dom.html();
+                if (html) {
+                    output.push({
+                        name: "common",
+                        data: {
+                            data: html
+                        },
+                    });
+                }
+            });
+            registerHandler("BLOCKQUOTE", function ($dom) {
+                var html = $dom[0].outerHTML;
+                if (html) {
+                    output.push({
+                        name: "common",
+                        data: {
+                            data: html
+                        },
+                    });
                 }
             });
         }
@@ -2116,7 +2165,14 @@
         initStyle += "display:inline-block;font-size: 17px;padding-top:0px;padding-bottom:0px;font-size:16px;}";
         $(".authi").append($btn);
         $btn.on("click", function () {
-            a.html(a.html().replace(/<br>/g,"<p>"));
+            a.html(a.html().replace(/<br>/g, "<p>"));
+            homeTheft();
+        });
+        break;
+    case "leiphone":
+        initStyle += "display:inline-block;font-size: 17px;padding-top:0px;padding-bottom:0px;font-size:16px;    width: 100%;box-sizing: border-box;background-color: white;line-height: 43px;}";
+        $(".article-right").append($btn);
+        $btn.on("click", function () {
             homeTheft();
         });
         break;
