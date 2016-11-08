@@ -1874,7 +1874,10 @@
             $article.html($article.html().replace(/<br>/g, "<p>"));
             break;
         case "leiphone":
-            $article = $(".article-left>div").eq(0);
+            $article = $(".article-left").eq(0);
+            if($article.children().length<3){
+                $article=$article.children()[0];
+            }
             break;
         }
         $article.find("script,link,style").remove();
