@@ -1869,6 +1869,7 @@
             break;
         case "weixin":
             $article = $("#js_content");
+            break;
         case "miui":
             $article = $(".pct .t_f").eq(0);
             $article.html($article.html().replace(/<br>/g, "<p>"));
