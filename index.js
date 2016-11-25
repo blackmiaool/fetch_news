@@ -13,6 +13,7 @@
 // @include      https://www.miui.com/*
 // @include      http://www.leiphone.com/*
 // @include      https://www.leiphone.com/*
+// @include      https://cdn.cnbj0.fds.api.mi-img.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
 // ==/UserScript==
@@ -25,9 +26,9 @@
             define(function () {
                 return factory(global)
             })
-        else
-            factory(global)
-    }(this, function (window) {
+            else
+                factory(global)
+                }(this, function (window) {
         var Zepto = (function () {
             var undefined, key, $, classList, emptyArray = [],
                 concat = emptyArray.concat,
@@ -37,14 +38,14 @@
                 elementDisplay = {},
                 classCache = {},
                 cssNumber = {
-                    'column-count': 1,
-                    'columns': 1,
-                    'font-weight': 1,
-                    'line-height': 1,
-                    'opacity': 1,
-                    'z-index': 1,
-                    'zoom': 1
-                },
+                'column-count': 1,
+                'columns': 1,
+                'font-weight': 1,
+                'line-height': 1,
+                'opacity': 1,
+                'z-index': 1,
+                'zoom': 1
+            },
                 fragmentRE = /^\s*<(\w+|!)[^>]*>/,
                 singleTagRE = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
                 tagExpanderRE = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
@@ -58,14 +59,14 @@
                 table = document.createElement('table'),
                 tableRow = document.createElement('tr'),
                 containers = {
-                    'tr': document.createElement('tbody'),
-                    'tbody': table,
-                    'thead': table,
-                    'tfoot': table,
-                    'td': tableRow,
-                    'th': tableRow,
-                    '*': document.createElement('div')
-                },
+                'tr': document.createElement('tbody'),
+                'tbody': table,
+                'thead': table,
+                'tfoot': table,
+                'td': tableRow,
+                'th': tableRow,
+                '*': document.createElement('div')
+            },
                 readyRE = /complete|loaded|interactive/,
                 simpleSelectorRE = /^[\w-]*$/,
                 class2type = {},
@@ -74,23 +75,23 @@
                 camelize, uniq,
                 tempParent = document.createElement('div'),
                 propMap = {
-                    'tabindex': 'tabIndex',
-                    'readonly': 'readOnly',
-                    'for': 'htmlFor',
-                    'class': 'className',
-                    'maxlength': 'maxLength',
-                    'cellspacing': 'cellSpacing',
-                    'cellpadding': 'cellPadding',
-                    'rowspan': 'rowSpan',
-                    'colspan': 'colSpan',
-                    'usemap': 'useMap',
-                    'frameborder': 'frameBorder',
-                    'contenteditable': 'contentEditable'
-                },
+                'tabindex': 'tabIndex',
+                'readonly': 'readOnly',
+                'for': 'htmlFor',
+                'class': 'className',
+                'maxlength': 'maxLength',
+                'cellspacing': 'cellSpacing',
+                'cellpadding': 'cellPadding',
+                'rowspan': 'rowSpan',
+                'colspan': 'colSpan',
+                'usemap': 'useMap',
+                'frameborder': 'frameBorder',
+                'contenteditable': 'contentEditable'
+            },
                 isArray = Array.isArray ||
                 function (object) {
-                    return object instanceof Array
-                }
+                return object instanceof Array
+            }
 
             zepto.matches = function (element, selector) {
                 if (!selector || !element || element.nodeType !== 1) return false
@@ -98,18 +99,18 @@
                     element.mozMatchesSelector || element.oMatchesSelector ||
                     element.matchesSelector
                 if (matchesSelector) return matchesSelector.call(element, selector)
-                    // fall back to performing a selector:
+                // fall back to performing a selector:
                 var match, parent = element.parentNode,
                     temp = !parent
                 if (temp)(parent = tempParent).appendChild(element)
-                match = ~zepto.qsa(parent, selector).indexOf(element)
-                temp && tempParent.removeChild(element)
-                return match
+                    match = ~zepto.qsa(parent, selector).indexOf(element)
+                    temp && tempParent.removeChild(element)
+                    return match
             }
 
             function type(obj) {
                 return obj == null ? String(obj) :
-                    class2type[toString.call(obj)] || "object"
+                class2type[toString.call(obj)] || "object"
             }
 
             function isFunction(value) {
@@ -195,9 +196,9 @@
             function children(element) {
                 return 'children' in element ?
                     slice.call(element.children) :
-                    $.map(element.childNodes, function (node) {
-                        if (node.nodeType == 1) return node
-                    })
+                $.map(element.childNodes, function (node) {
+                    if (node.nodeType == 1) return node
+                        })
             }
 
             function Z(dom, selector) {
@@ -235,7 +236,7 @@
                     $.each(properties, function (key, value) {
                         if (methodAttributes.indexOf(key) > -1) nodes[key](value)
                         else nodes.attr(key, value)
-                    })
+                            })
                 }
 
                 return dom
@@ -260,41 +261,41 @@
             // This method can be overridden in plugins.
             zepto.init = function (selector, context) {
                 var dom
-                    // If nothing given, return an empty Zepto collection
+                // If nothing given, return an empty Zepto collection
                 if (!selector) return zepto.Z()
-                    // Optimize for string selectors
+                // Optimize for string selectors
                 else if (typeof selector == 'string') {
                     selector = selector.trim()
-                        // If it's a html fragment, create nodes from it
-                        // Note: In both Chrome 21 and Firefox 15, DOM error 12
-                        // is thrown if the fragment doesn't begin with <
+                    // If it's a html fragment, create nodes from it
+                    // Note: In both Chrome 21 and Firefox 15, DOM error 12
+                    // is thrown if the fragment doesn't begin with <
                     if (selector[0] == '<' && fragmentRE.test(selector))
                         dom = zepto.fragment(selector, RegExp.$1, context), selector = null
                         // If there's a context, create a collection on that context first, and select
                         // nodes from there
-                    else if (context !== undefined) return $(context).find(selector)
+                        else if (context !== undefined) return $(context).find(selector)
                         // If it's a CSS selector, use it to select nodes.
-                    else dom = zepto.qsa(document, selector)
-                }
+                        else dom = zepto.qsa(document, selector)
+                            }
                 // If a function is given, call it when the DOM is ready
                 else if (isFunction(selector)) return $(document).ready(selector)
-                    // If a Zepto collection is given, just return it
+                // If a Zepto collection is given, just return it
                 else if (zepto.isZ(selector)) return selector
                 else {
                     // normalize array if an array of nodes is given
                     if (isArray(selector)) dom = compact(selector)
-                        // Wrap DOM nodes.
+                    // Wrap DOM nodes.
                     else if (isObject(selector))
                         dom = [selector], selector = null
                         // If it's a html fragment, create nodes from it
-                    else if (fragmentRE.test(selector))
-                        dom = zepto.fragment(selector.trim(), RegExp.$1, context), selector = null
-                        // If there's a context, create a collection on that context first, and select
-                        // nodes from there
-                    else if (context !== undefined) return $(context).find(selector)
-                        // And last but no least, if it's a CSS selector, use it to select nodes.
-                    else dom = zepto.qsa(document, selector)
-                }
+                        else if (fragmentRE.test(selector))
+                            dom = zepto.fragment(selector.trim(), RegExp.$1, context), selector = null
+                            // If there's a context, create a collection on that context first, and select
+                            // nodes from there
+                            else if (context !== undefined) return $(context).find(selector)
+                            // And last but no least, if it's a CSS selector, use it to select nodes.
+                            else dom = zepto.qsa(document, selector)
+                                }
                 // create a new Zepto collection from the nodes found
                 return zepto.Z(dom, selector)
             }
@@ -312,11 +313,11 @@
                     if (deep && (isPlainObject(source[key]) || isArray(source[key]))) {
                         if (isPlainObject(source[key]) && !isPlainObject(target[key]))
                             target[key] = {}
-                        if (isArray(source[key]) && !isArray(target[key]))
-                            target[key] = []
-                        extend(target[key], source[key], deep)
+                            if (isArray(source[key]) && !isArray(target[key]))
+                                target[key] = []
+                                extend(target[key], source[key], deep)
                     } else if (source[key] !== undefined) target[key] = source[key]
-            }
+                        }
 
             // Copy all but undefined properties from one or more
             // objects to the `target` object.
@@ -343,13 +344,13 @@
                     isSimple = simpleSelectorRE.test(nameOnly)
                 return (element.getElementById && isSimple && maybeID) ? // Safari DocumentFragment doesn't have getElementById
                     ((found = element.getElementById(nameOnly)) ? [found] : []) :
-                    (element.nodeType !== 1 && element.nodeType !== 9 && element.nodeType !== 11) ? [] :
-                    slice.call(
-                        isSimple && !maybeID && element.getElementsByClassName ? // DocumentFragment doesn't have getElementsByClassName/TagName
-                        maybeClass ? element.getElementsByClassName(nameOnly) : // If it's simple, it could be a class
-                        element.getElementsByTagName(selector) : // Or a tag
-                        element.querySelectorAll(selector) // Or it's not simple, and we need to query all
-                    )
+                (element.nodeType !== 1 && element.nodeType !== 9 && element.nodeType !== 11) ? [] :
+                slice.call(
+                    isSimple && !maybeID && element.getElementsByClassName ? // DocumentFragment doesn't have getElementsByClassName/TagName
+                    maybeClass ? element.getElementsByClassName(nameOnly) : // If it's simple, it could be a class
+                    element.getElementsByTagName(selector) : // Or a tag
+                    element.querySelectorAll(selector) // Or it's not simple, and we need to query all
+                )
             }
 
             function filtered(nodes, selector) {
@@ -358,13 +359,13 @@
 
             $.contains = document.documentElement.contains ?
                 function (parent, node) {
-                    return parent !== node && parent.contains(node)
-                } :
-                function (parent, node) {
-                    while (node && (node = node.parentNode))
-                        if (node === parent) return true
+                return parent !== node && parent.contains(node)
+            } :
+            function (parent, node) {
+                while (node && (node = node.parentNode))
+                    if (node === parent) return true
                     return false
-                }
+            }
 
             function funcArg(context, arg, idx, payload) {
                 return isFunction(arg) ? arg.call(context, idx, payload) : arg
@@ -396,11 +397,11 @@
                     return value ?
                         value == "true" ||
                         (value == "false" ? false :
-                            value == "null" ? null :
-                            +value + "" == value ? +value :
-                            /^[\[\{]/.test(value) ? $.parseJSON(value) :
-                            value) :
-                        value
+                         value == "null" ? null :
+                         +value + "" == value ? +value :
+                         /^[\[\{]/.test(value) ? $.parseJSON(value) :
+                         value) :
+                    value
                 } catch (e) {
                     return value
                 }
@@ -448,12 +449,12 @@
                     for (i = 0; i < elements.length; i++) {
                         value = callback(elements[i], i)
                         if (value != null) values.push(value)
-                    }
+                            }
                 else
                     for (key in elements) {
                         value = callback(elements[key], key)
                         if (value != null) values.push(value)
-                    }
+                            }
                 return flatten(values)
             }
 
@@ -462,10 +463,10 @@
                 if (likeArray(elements)) {
                     for (i = 0; i < elements.length; i++)
                         if (callback.call(elements[i], i, elements[i]) === false) return elements
-                } else {
-                    for (key in elements)
-                        if (callback.call(elements[key], key, elements[key]) === false) return elements
-                }
+                            } else {
+                                for (key in elements)
+                                    if (callback.call(elements[key], key, elements[key]) === false) return elements
+                                        }
 
                 return elements
             }
@@ -537,7 +538,7 @@
                     return this.each(function () {
                         if (this.parentNode != null)
                             this.parentNode.removeChild(this)
-                    })
+                            })
                 },
                 each: function (callback) {
                     emptyArray.every.call(this, function (el, idx) {
@@ -562,21 +563,21 @@
                     if (isFunction(selector) && selector.call !== undefined)
                         this.each(function (idx) {
                             if (!selector.call(this, idx)) nodes.push(this)
-                        })
-                    else {
-                        var excludes = typeof selector == 'string' ? this.filter(selector) :
+                                })
+                        else {
+                            var excludes = typeof selector == 'string' ? this.filter(selector) :
                             (likeArray(selector) && isFunction(selector.item)) ? slice.call(selector) : $(selector)
-                        this.forEach(function (el) {
-                            if (excludes.indexOf(el) < 0) nodes.push(el)
-                        })
-                    }
+                            this.forEach(function (el) {
+                                if (excludes.indexOf(el) < 0) nodes.push(el)
+                                    })
+                        }
                     return $(nodes)
                 },
                 has: function (selector) {
                     return this.filter(function () {
                         return isObject(selector) ?
                             $.contains(this, selector) :
-                            $(this).find(selector).size()
+                        $(this).find(selector).size()
                     })
                 },
                 eq: function (idx) {
@@ -600,11 +601,11 @@
                                 return $.contains(parent, node)
                             })
                         })
-                    else if (this.length == 1) result = $(zepto.qsa(this[0], selector))
-                    else result = this.map(function () {
-                        return zepto.qsa(this, selector)
-                    })
-                    return result
+                        else if (this.length == 1) result = $(zepto.qsa(this[0], selector))
+                        else result = this.map(function () {
+                            return zepto.qsa(this, selector)
+                        })
+                        return result
                 },
                 closest: function (selector, context) {
                     var nodes = [],
@@ -612,8 +613,8 @@
                     this.each(function (_, node) {
                         while (node && !(collection ? collection.indexOf(node) >= 0 : zepto.matches(node, selector)))
                             node = node !== context && !isDocument(node) && node.parentNode
-                        if (node && nodes.indexOf(node) < 0) nodes.push(node)
-                    })
+                            if (node && nodes.indexOf(node) < 0) nodes.push(node)
+                                })
                     return $(nodes)
                 },
                 parents: function (selector) {
@@ -626,7 +627,7 @@
                                 return node
                             }
                         })
-                    return filtered(ancestors, selector)
+                        return filtered(ancestors, selector)
                 },
                 parent: function (selector) {
                     return filtered(uniq(this.pluck('parentNode')), selector)
@@ -664,7 +665,7 @@
                         this.style.display == "none" && (this.style.display = '')
                         if (getComputedStyle(this, '').getPropertyValue("display") == "none")
                             this.style.display = defaultDisplay(this.nodeName)
-                    })
+                            })
                 },
                 replaceWith: function (newContent) {
                     return this.before(newContent).remove()
@@ -675,18 +676,18 @@
                         var dom = $(structure).get(0),
                             clone = dom.parentNode || this.length > 1
 
-                    return this.each(function (index) {
-                        $(this).wrapAll(
-                            func ? structure.call(this, index) :
-                            clone ? dom.cloneNode(true) : dom
-                        )
-                    })
+                        return this.each(function (index) {
+                            $(this).wrapAll(
+                                func ? structure.call(this, index) :
+                                clone ? dom.cloneNode(true) : dom
+                            )
+                        })
                 },
                 wrapAll: function (structure) {
                     if (this[0]) {
                         $(this[0]).before(structure = $(structure))
                         var children
-                            // drill down to the inmost element
+                        // drill down to the inmost element
                         while ((children = structure.children()).length) structure = children.first()
                         $(structure).append(this)
                     }
@@ -730,29 +731,29 @@
                 html: function (html) {
                     return 0 in arguments ?
                         this.each(function (idx) {
-                            var originHtml = this.innerHTML
-                            $(this).empty().append(funcArg(this, html, idx, originHtml))
-                        }) :
-                        (0 in this ? this[0].innerHTML : null)
+                        var originHtml = this.innerHTML
+                        $(this).empty().append(funcArg(this, html, idx, originHtml))
+                    }) :
+                    (0 in this ? this[0].innerHTML : null)
                 },
                 text: function (text) {
                     return 0 in arguments ?
                         this.each(function (idx) {
-                            var newText = funcArg(this, text, idx, this.textContent)
-                            this.textContent = newText == null ? '' : '' + newText
-                        }) :
-                        (0 in this ? this.pluck('textContent').join("") : null)
+                        var newText = funcArg(this, text, idx, this.textContent)
+                        this.textContent = newText == null ? '' : '' + newText
+                    }) :
+                    (0 in this ? this.pluck('textContent').join("") : null)
                 },
                 attr: function (name, value) {
                     var result
                     return (typeof name == 'string' && !(1 in arguments)) ?
                         (0 in this && this[0].nodeType == 1 && (result = this[0].getAttribute(name)) != null ? result : undefined) :
-                        this.each(function (idx) {
-                            if (this.nodeType !== 1) return
-                            if (isObject(name))
-                                for (key in name) setAttribute(this, key, name[key])
-                            else setAttribute(this, name, funcArg(this, value, idx, this.getAttribute(name)))
-                        })
+                    this.each(function (idx) {
+                        if (this.nodeType !== 1) return
+                        if (isObject(name))
+                        for (key in name) setAttribute(this, key, name[key])
+                        else setAttribute(this, name, funcArg(this, value, idx, this.getAttribute(name)))
+                            })
                 },
                 removeAttr: function (name) {
                     return this.each(function () {
@@ -765,9 +766,9 @@
                     name = propMap[name] || name
                     return (1 in arguments) ?
                         this.each(function (idx) {
-                            this[name] = funcArg(this, value, idx, this[name])
-                        }) :
-                        (this[0] && this[0][name])
+                        this[name] = funcArg(this, value, idx, this[name])
+                    }) :
+                    (this[0] && this[0][name])
                 },
                 removeProp: function (name) {
                     name = propMap[name] || name
@@ -780,7 +781,7 @@
 
                     var data = (1 in arguments) ?
                         this.attr(attrName, value) :
-                        this.attr(attrName)
+                    this.attr(attrName)
 
                     return data !== null ? deserializeValue(data) : undefined
                 },
@@ -792,10 +793,10 @@
                         })
                     } else {
                         return this[0] && (this[0].multiple ?
-                            $(this[0]).find('option').filter(function () {
-                                return this.selected
-                            }).pluck('value') :
-                            this[0].value)
+                                           $(this[0]).find('option').filter(function () {
+                            return this.selected
+                        }).pluck('value') :
+                                           this[0].value)
                     }
                 },
                 offset: function (coordinates) {
@@ -817,13 +818,13 @@
                             top: 0,
                             left: 0
                         }
-                    var obj = this[0].getBoundingClientRect()
-                    return {
-                        left: obj.left + window.pageXOffset,
-                        top: obj.top + window.pageYOffset,
-                        width: Math.round(obj.width),
-                        height: Math.round(obj.height)
-                    }
+                        var obj = this[0].getBoundingClientRect()
+                        return {
+                            left: obj.left + window.pageXOffset,
+                            top: obj.top + window.pageYOffset,
+                            width: Math.round(obj.width),
+                            height: Math.round(obj.height)
+                        }
                 },
                 css: function (property, value) {
                     if (arguments.length < 2) {
@@ -831,15 +832,15 @@
                         if (typeof property == 'string') {
                             if (!element) return
                             return element.style[camelize(property)] || getComputedStyle(element, '').getPropertyValue(property)
-                        } else if (isArray(property)) {
-                            if (!element) return
-                            var props = {}
-                            var computedStyle = getComputedStyle(element, '')
-                            $.each(property, function (_, prop) {
-                                props[prop] = (element.style[camelize(prop)] || computedStyle.getPropertyValue(prop))
-                            })
-                            return props
-                        }
+                                } else if (isArray(property)) {
+                                    if (!element) return
+                                    var props = {}
+                                    var computedStyle = getComputedStyle(element, '')
+                                    $.each(property, function (_, prop) {
+                                        props[prop] = (element.style[camelize(prop)] || computedStyle.getPropertyValue(prop))
+                                    })
+                                    return props
+                                }
                     }
 
                     var css = ''
@@ -848,17 +849,17 @@
                             this.each(function () {
                                 this.style.removeProperty(dasherize(property))
                             })
-                        else
-                            css = dasherize(property) + ":" + maybeAddPx(property, value)
-                    } else {
-                        for (key in property)
-                            if (!property[key] && property[key] !== 0)
-                                this.each(function () {
-                                    this.style.removeProperty(dasherize(key))
-                                })
                             else
-                                css += dasherize(key) + ':' + maybeAddPx(key, property[key]) + ';'
-                    }
+                                css = dasherize(property) + ":" + maybeAddPx(property, value)
+                                } else {
+                                    for (key in property)
+                                        if (!property[key] && property[key] !== 0)
+                                            this.each(function () {
+                                                this.style.removeProperty(dasherize(key))
+                                            })
+                                            else
+                                                css += dasherize(key) + ':' + maybeAddPx(key, property[key]) + ';'
+                                                }
 
                     return this.each(function () {
                         this.style.cssText += ';' + css
@@ -882,7 +883,7 @@
                             newName = funcArg(this, name, idx, cls)
                         newName.split(/\s+/g).forEach(function (klass) {
                             if (!$(this).hasClass(klass)) classList.push(klass)
-                        }, this)
+                                }, this)
                         classList.length && className(this, cls + (cls ? " " : "") + classList.join(" "))
                     })
                 },
@@ -904,7 +905,7 @@
                             names = funcArg(this, name, idx, className(this))
                         names.split(/\s+/g).forEach(function (klass) {
                             (when === undefined ? !$this.hasClass(klass) : when) ?
-                            $this.addClass(klass): $this.removeClass(klass)
+                                $this.addClass(klass): $this.removeClass(klass)
                         })
                     })
                 },
@@ -913,24 +914,24 @@
                     var hasScrollTop = 'scrollTop' in this[0]
                     if (value === undefined) return hasScrollTop ? this[0].scrollTop : this[0].pageYOffset
                     return this.each(hasScrollTop ?
-                        function () {
-                            this.scrollTop = value
-                        } :
-                        function () {
-                            this.scrollTo(this.scrollX, value)
-                        })
+                                     function () {
+                        this.scrollTop = value
+                    } :
+                                     function () {
+                        this.scrollTo(this.scrollX, value)
+                    })
                 },
                 scrollLeft: function (value) {
                     if (!this.length) return
                     var hasScrollLeft = 'scrollLeft' in this[0]
                     if (value === undefined) return hasScrollLeft ? this[0].scrollLeft : this[0].pageXOffset
                     return this.each(hasScrollLeft ?
-                        function () {
-                            this.scrollLeft = value
-                        } :
-                        function () {
-                            this.scrollTo(value, this.scrollY)
-                        })
+                                     function () {
+                        this.scrollLeft = value
+                    } :
+                                     function () {
+                        this.scrollTo(value, this.scrollY)
+                    })
                 },
                 position: function () {
                     if (!this.length) return
@@ -941,9 +942,9 @@
                         // Get correct offsets
                         offset = this.offset(),
                         parentOffset = rootNodeRE.test(offsetParent[0].nodeName) ? {
-                            top: 0,
-                            left: 0
-                        } : offsetParent.offset()
+                        top: 0,
+                        left: 0
+                    } : offsetParent.offset()
 
                     // Subtract element margins
                     // note: when an element has margin: auto the offsetLeft and marginLeft
@@ -966,7 +967,7 @@
                         var parent = this.offsetParent || document.body
                         while (parent && !rootNodeRE.test(parent.nodeName) && $(parent).css("position") == "static")
                             parent = parent.offsetParent
-                        return parent
+                            return parent
                     })
                 }
             }
@@ -985,20 +986,20 @@
                 $.fn[dimension] = function (value) {
                     var offset, el = this[0]
                     if (value === undefined) return isWindow(el) ? el['inner' + dimensionProperty] :
-                        isDocument(el) ? el.documentElement['scroll' + dimensionProperty] :
-                        (offset = this.offset()) && offset[dimension]
+                    isDocument(el) ? el.documentElement['scroll' + dimensionProperty] :
+                    (offset = this.offset()) && offset[dimension]
                     else return this.each(function (idx) {
                         el = $(this)
                         el.css(dimension, funcArg(this, value, idx, el[dimension]()))
                     })
-                }
+                        }
             })
 
             function traverseNode(node, fun) {
                 fun(node)
                 for (var i = 0, len = node.childNodes.length; i < len; i++)
                     traverseNode(node.childNodes[i], fun)
-            }
+                    }
 
             // Generate the `after`, `prepend`, `before`, `append`,
             // `insertAfter`, `insertBefore`, `appendTo`, and `prependTo` methods.
@@ -1008,19 +1009,19 @@
                 $.fn[operator] = function () {
                     // arguments can be nodes, arrays of nodes, Zepto objects and HTML strings
                     var argType, nodes = $.map(arguments, function (arg) {
-                            var arr = []
-                            argType = type(arg)
-                            if (argType == "array") {
-                                arg.forEach(function (el) {
-                                    if (el.nodeType !== undefined) return arr.push(el)
-                                    else if ($.zepto.isZ(el)) return arr = arr.concat(el.get())
-                                    arr = arr.concat(zepto.fragment(el))
-                                })
-                                return arr
-                            }
-                            return argType == "object" || arg == null ?
-                                arg : zepto.fragment(arg)
-                        }),
+                        var arr = []
+                        argType = type(arg)
+                        if (argType == "array") {
+                            arg.forEach(function (el) {
+                                if (el.nodeType !== undefined) return arr.push(el)
+                                else if ($.zepto.isZ(el)) return arr = arr.concat(el.get())
+                                arr = arr.concat(zepto.fragment(el))
+                            })
+                            return arr
+                        }
+                        return argType == "object" || arg == null ?
+                            arg : zepto.fragment(arg)
+                    }),
                         parent, copyByClone = this.length > 1
                     if (nodes.length < 1) return this
 
@@ -1029,9 +1030,9 @@
 
                         // convert all methods to a "before" operation
                         target = operatorIndex == 0 ? target.nextSibling :
-                            operatorIndex == 1 ? target.firstChild :
-                            operatorIndex == 2 ? target :
-                            null
+                        operatorIndex == 1 ? target.firstChild :
+                        operatorIndex == 2 ? target :
+                        null
 
                         var parentInDocument = $.contains(document.documentElement, parent)
 
@@ -1047,7 +1048,7 @@
                                     target['eval'].call(target, el.innerHTML)
                                 }
                             })
-                        })
+                                })
                     })
                 }
 
@@ -1078,28 +1079,28 @@
         (function ($) {
             var _zid = 1,
                 undefined,
-                slice = Array.prototype.slice,
-                isFunction = $.isFunction,
-                isString = function (obj) {
+                    slice = Array.prototype.slice,
+                    isFunction = $.isFunction,
+                    isString = function (obj) {
                     return typeof obj == 'string'
                 },
-                handlers = {},
-                specialEvents = {},
-                focusinSupported = 'onfocusin' in window,
-                focus = {
+                    handlers = {},
+                    specialEvents = {},
+                    focusinSupported = 'onfocusin' in window,
+                    focus = {
                     focus: 'focusin',
                     blur: 'focusout'
                 },
-                hover = {
+                    hover = {
                     mouseenter: 'mouseover',
                     mouseleave: 'mouseout'
                 }
 
-            specialEvents.click = specialEvents.mousedown = specialEvents.mouseup = specialEvents.mousemove = 'MouseEvents'
+                specialEvents.click = specialEvents.mousedown = specialEvents.mouseup = specialEvents.mousemove = 'MouseEvents'
 
-            function zid(element) {
-                return element._zid || (element._zid = _zid++)
-            }
+                function zid(element) {
+                    return element._zid || (element._zid = _zid++)
+                }
 
             function findHandlers(element, event, fn, selector) {
                 event = parse(event)
@@ -1143,12 +1144,12 @@
                     var handler = parse(event)
                     handler.fn = fn
                     handler.sel = selector
-                        // emulate mouseenter, mouseleave
+                    // emulate mouseenter, mouseleave
                     if (handler.e in hover) fn = function (e) {
                         var related = e.relatedTarget
                         if (!related || (related !== this && !$.contains(this, related)))
                             return handler.fn.apply(this, arguments)
-                    }
+                            }
                     handler.del = delegator
                     var callback = delegator || fn
                     handler.proxy = function (e) {
@@ -1163,7 +1164,7 @@
                     set.push(handler)
                     if ('addEventListener' in element)
                         element.addEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
-                })
+                        })
             }
 
             function remove(element, events, fn, selector, capture) {
@@ -1173,7 +1174,7 @@
                         delete handlers[id][handler.i]
                         if ('removeEventListener' in element)
                             element.removeEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
-                    })
+                            })
                 })
             }
 
@@ -1213,8 +1214,8 @@
             }
 
             var returnTrue = function () {
-                    return true
-                },
+                return true
+            },
                 returnFalse = function () {
                     return false
                 },
@@ -1244,7 +1245,7 @@
                         'returnValue' in source ? source.returnValue === false :
                         source.getPreventDefault && source.getPreventDefault())
                         event.isDefaultPrevented = returnTrue
-                }
+                        }
                 return event
             }
 
@@ -1255,7 +1256,7 @@
                 for (key in event)
                     if (!ignoreProperties.test(key) && event[key] !== undefined) proxy[key] = event[key]
 
-                return compatible(proxy, event)
+                    return compatible(proxy, event)
             }
 
             $.fn.delegate = function (selector, event, callback) {
@@ -1285,30 +1286,30 @@
 
                 if (!isString(selector) && !isFunction(callback) && callback !== false)
                     callback = data, data = selector, selector = undefined
-                if (callback === undefined || data === false)
-                    callback = data, data = undefined
+                    if (callback === undefined || data === false)
+                        callback = data, data = undefined
 
-                if (callback === false) callback = returnFalse
+                        if (callback === false) callback = returnFalse
 
-                return $this.each(function (_, element) {
-                    if (one) autoRemove = function (e) {
-                        remove(element, e.type, callback)
-                        return callback.apply(this, arguments)
-                    }
+                        return $this.each(function (_, element) {
+                            if (one) autoRemove = function (e) {
+                                remove(element, e.type, callback)
+                                return callback.apply(this, arguments)
+                            }
 
-                    if (selector) delegator = function (e) {
-                        var evt, match = $(e.target).closest(selector, element).get(0)
-                        if (match && match !== element) {
-                            evt = $.extend(createProxy(e), {
-                                currentTarget: match,
-                                liveFired: element
-                            })
-                            return (autoRemove || callback).apply(match, [evt].concat(slice.call(arguments, 1)))
-                        }
-                    }
+                            if (selector) delegator = function (e) {
+                                var evt, match = $(e.target).closest(selector, element).get(0)
+                                if (match && match !== element) {
+                                    evt = $.extend(createProxy(e), {
+                                        currentTarget: match,
+                                        liveFired: element
+                                    })
+                                    return (autoRemove || callback).apply(match, [evt].concat(slice.call(arguments, 1)))
+                                }
+                            }
 
-                    add(element, event, callback, data, selector, delegator || autoRemove)
-                })
+                            add(element, event, callback, data, selector, delegator || autoRemove)
+                        })
             }
             $.fn.off = function (event, selector, callback) {
                 var $this = this
@@ -1322,11 +1323,11 @@
                 if (!isString(selector) && !isFunction(callback) && callback !== false)
                     callback = selector, selector = undefined
 
-                if (callback === false) callback = returnFalse
+                    if (callback === false) callback = returnFalse
 
-                return $this.each(function () {
-                    remove(this, event, callback, selector)
-                })
+                    return $this.each(function () {
+                        remove(this, event, callback, selector)
+                    })
             }
 
             $.fn.trigger = function (event, args) {
@@ -1335,10 +1336,10 @@
                 return this.each(function () {
                     // handle focus(), blur() by calling them directly
                     if (event.type in focus && typeof this[event.type] == "function") this[event.type]()
-                        // items in the collection might not be DOM elements
+                    // items in the collection might not be DOM elements
                     else if ('dispatchEvent' in this) this.dispatchEvent(event)
                     else $(this).triggerHandler(event, args)
-                })
+                        })
             }
 
             // triggers event handlers on current element just as if an event occurred,
@@ -1352,7 +1353,7 @@
                     $.each(findHandlers(element, event.type || event), function (i, handler) {
                         result = handler.proxy(e)
                         if (e.isImmediatePropagationStopped()) return false
-                    })
+                            })
                 })
                 return result
             }
@@ -1360,12 +1361,12 @@
             // shortcut methods for `.bind(event, fn)` for each event type
             ;
             ('focusin focusout focus blur load resize scroll unload click dblclick ' +
-                'mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave ' +
-                'change select keydown keypress keyup error').split(' ').forEach(function (event) {
+             'mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave ' +
+             'change select keydown keypress keyup error').split(' ').forEach(function (event) {
                 $.fn[event] = function (callback) {
                     return (0 in arguments) ?
                         this.bind(event, callback) :
-                        this.trigger(event)
+                    this.trigger(event)
                 }
             })
 
@@ -1375,8 +1376,8 @@
                     bubbles = true
                 if (props)
                     for (var name in props)(name == 'bubbles') ? (bubbles = !!props[name]) : (event[name] = props[name])
-                event.initEvent(type, bubbles, true)
-                return compatible(event)
+                    event.initEvent(type, bubbles, true)
+                    return compatible(event)
             }
 
         })(Zepto)
@@ -1407,18 +1408,18 @@
             // trigger an Ajax "global" event
             function triggerGlobal(settings, context, eventName, data) {
                 if (settings.global) return triggerAndReturn(context || document, eventName, data)
-            }
+                    }
 
             // Number of active Ajax requests
             $.active = 0
 
             function ajaxStart(settings) {
                 if (settings.global && $.active++ === 0) triggerGlobal(settings, null, 'ajaxStart')
-            }
+                    }
 
             function ajaxStop(settings) {
                 if (settings.global && !(--$.active)) triggerGlobal(settings, null, 'ajaxStop')
-            }
+                    }
 
             // triggers an extra global event "ajaxBeforeSend" that's like "ajaxSend" but cancelable
             function ajaxBeforeSend(xhr, settings) {
@@ -1427,7 +1428,7 @@
                     triggerGlobal(settings, context, 'ajaxBeforeSend', [xhr, settings]) === false)
                     return false
 
-                triggerGlobal(settings, context, 'ajaxSend', [xhr, settings])
+                    triggerGlobal(settings, context, 'ajaxSend', [xhr, settings])
             }
 
             function ajaxSuccess(data, xhr, settings, deferred) {
@@ -1468,7 +1469,7 @@
 
                 var _callbackName = options.jsonpCallback,
                     callbackName = ($.isFunction(_callbackName) ?
-                        _callbackName() : _callbackName) || ('Zepto' + (jsonpID++)),
+                                    _callbackName() : _callbackName) || ('Zepto' + (jsonpID++)),
                     script = document.createElement('script'),
                     originalCallback = window[callbackName],
                     responseData,
@@ -1496,7 +1497,7 @@
                     if (responseData && $.isFunction(originalCallback))
                         originalCallback(responseData[0])
 
-                    originalCallback = responseData = undefined
+                        originalCallback = responseData = undefined
                 })
 
                 if (ajaxBeforeSend(xhr, options) === false) {
@@ -1563,9 +1564,9 @@
             function mimeToDataType(mime) {
                 if (mime) mime = mime.split(';', 2)[0]
                 return mime && (mime == htmlType ? 'html' :
-                    mime == jsonType ? 'json' :
-                    scriptTypeRE.test(mime) ? 'script' :
-                    xmlTypeRE.test(mime) && 'xml') || 'text'
+                                mime == jsonType ? 'json' :
+                                scriptTypeRE.test(mime) ? 'script' :
+                                xmlTypeRE.test(mime) && 'xml') || 'text'
             }
 
             function appendQuery(url, query) {
@@ -1577,9 +1578,9 @@
             function serializeData(options) {
                 if (options.processData && options.data && $.type(options.data) != "string")
                     options.data = $.param(options.data, options.traditional)
-                if (options.data && (!options.type || options.type.toUpperCase() == 'GET' || 'jsonp' == options.dataType))
-                    options.url = appendQuery(options.url, options.data), options.data = undefined
-            }
+                    if (options.data && (!options.type || options.type.toUpperCase() == 'GET' || 'jsonp' == options.dataType))
+                        options.url = appendQuery(options.url, options.data), options.data = undefined
+                        }
 
             $.ajax = function (options) {
                 var settings = $.extend({}, options || {}),
@@ -1588,15 +1589,15 @@
                 for (key in $.ajaxSettings)
                     if (settings[key] === undefined) settings[key] = $.ajaxSettings[key]
 
-                ajaxStart(settings)
+                    ajaxStart(settings)
 
-                if (!settings.crossDomain) {
-                    urlAnchor = document.createElement('a')
-                    urlAnchor.href = settings.url
+                    if (!settings.crossDomain) {
+                        urlAnchor = document.createElement('a')
+                        urlAnchor.href = settings.url
                         // cleans up URL for .href (IE only), see https://github.com/madrobby/zepto/pull/1049
-                    urlAnchor.href = urlAnchor.href
-                    settings.crossDomain = (originAnchor.protocol + '//' + originAnchor.host) !== (urlAnchor.protocol + '//' + urlAnchor.host)
-                }
+                        urlAnchor.href = urlAnchor.href
+                        settings.crossDomain = (originAnchor.protocol + '//' + originAnchor.host) !== (urlAnchor.protocol + '//' + urlAnchor.host)
+                    }
 
                 if (!settings.url) settings.url = window.location.toString()
                 if ((hashIndex = settings.url.indexOf('#')) > -1) settings.url = settings.url.slice(0, hashIndex)
@@ -1607,17 +1608,17 @@
                 if (hasPlaceholder) dataType = 'jsonp'
 
                 if (settings.cache === false || (
-                        (!options || options.cache !== true) &&
-                        ('script' == dataType || 'jsonp' == dataType)
-                    ))
+                    (!options || options.cache !== true) &&
+                    ('script' == dataType || 'jsonp' == dataType)
+                ))
                     settings.url = appendQuery(settings.url, '_=' + Date.now())
 
-                if ('jsonp' == dataType) {
-                    if (!hasPlaceholder)
-                        settings.url = appendQuery(settings.url,
-                            settings.jsonp ? (settings.jsonp + '=?') : settings.jsonp === false ? '' : 'callback=?')
-                    return $.ajaxJSONP(settings, deferred)
-                }
+                    if ('jsonp' == dataType) {
+                        if (!hasPlaceholder)
+                            settings.url = appendQuery(settings.url,
+                                                       settings.jsonp ? (settings.jsonp + '=?') : settings.jsonp === false ? '' : 'callback=?')
+                            return $.ajaxJSONP(settings, deferred)
+                    }
 
                 var mime = settings.accepts[dataType],
                     headers = {},
@@ -1640,49 +1641,49 @@
                 if (settings.contentType || (settings.contentType !== false && settings.data && settings.type.toUpperCase() != 'GET'))
                     setHeader('Content-Type', settings.contentType || 'application/x-www-form-urlencoded')
 
-                if (settings.headers)
-                    for (name in settings.headers) setHeader(name, settings.headers[name])
-                xhr.setRequestHeader = setHeader
+                    if (settings.headers)
+                        for (name in settings.headers) setHeader(name, settings.headers[name])
+                        xhr.setRequestHeader = setHeader
 
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
-                        xhr.onreadystatechange = empty
-                        clearTimeout(abortTimeout)
-                        var result, error = false
-                        if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304 || (xhr.status == 0 && protocol == 'file:')) {
-                            dataType = dataType || mimeToDataType(settings.mimeType || xhr.getResponseHeader('content-type'))
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState == 4) {
+                                xhr.onreadystatechange = empty
+                                clearTimeout(abortTimeout)
+                                var result, error = false
+                                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304 || (xhr.status == 0 && protocol == 'file:')) {
+                                    dataType = dataType || mimeToDataType(settings.mimeType || xhr.getResponseHeader('content-type'))
 
-                            if (xhr.responseType == 'arraybuffer' || xhr.responseType == 'blob')
-                                result = xhr.response
-                            else {
-                                result = xhr.responseText
+                                    if (xhr.responseType == 'arraybuffer' || xhr.responseType == 'blob')
+                                        result = xhr.response
+                                        else {
+                                            result = xhr.responseText
 
-                                try {
-                                    // http://perfectionkills.com/global-eval-what-are-the-options/
-                                    // sanitize response accordingly if data filter callback provided
-                                    result = ajaxDataFilter(result, dataType, settings)
-                                    if (dataType == 'script')(1, eval)(result)
-                                    else if (dataType == 'xml') result = xhr.responseXML
-                                    else if (dataType == 'json') result = blankRE.test(result) ? null : $.parseJSON(result)
-                                } catch (e) {
-                                    error = e
+                                            try {
+                                                // http://perfectionkills.com/global-eval-what-are-the-options/
+                                                // sanitize response accordingly if data filter callback provided
+                                                result = ajaxDataFilter(result, dataType, settings)
+                                                if (dataType == 'script')(1, eval)(result)
+                                                    else if (dataType == 'xml') result = xhr.responseXML
+                                                    else if (dataType == 'json') result = blankRE.test(result) ? null : $.parseJSON(result)
+                                                        } catch (e) {
+                                                            error = e
+                                                        }
+
+                                            if (error) return ajaxError(error, 'parsererror', xhr, settings, deferred)
+                                                }
+
+                                    ajaxSuccess(result, xhr, settings, deferred)
+                                } else {
+                                    ajaxError(xhr.statusText || null, xhr.status ? 'error' : 'abort', xhr, settings, deferred)
                                 }
-
-                                if (error) return ajaxError(error, 'parsererror', xhr, settings, deferred)
                             }
-
-                            ajaxSuccess(result, xhr, settings, deferred)
-                        } else {
-                            ajaxError(xhr.statusText || null, xhr.status ? 'error' : 'abort', xhr, settings, deferred)
                         }
-                    }
-                }
 
-                if (ajaxBeforeSend(xhr, settings) === false) {
-                    xhr.abort()
-                    ajaxError(null, 'abort', xhr, settings, deferred)
-                    return xhr
-                }
+                        if (ajaxBeforeSend(xhr, settings) === false) {
+                            xhr.abort()
+                            ajaxError(null, 'abort', xhr, settings, deferred)
+                            return xhr
+                        }
 
                 var async = 'async' in settings ? settings.async : true
                 xhr.open(settings.type, settings.url, async, settings.username, settings.password)
@@ -1690,17 +1691,17 @@
                 if (settings.xhrFields)
                     for (name in settings.xhrFields) xhr[name] = settings.xhrFields[name]
 
-                for (name in headers) nativeSetHeader.apply(xhr, headers[name])
+                    for (name in headers) nativeSetHeader.apply(xhr, headers[name])
 
-                if (settings.timeout > 0) abortTimeout = setTimeout(function () {
-                    xhr.onreadystatechange = empty
-                    xhr.abort()
-                    ajaxError(null, 'timeout', xhr, settings, deferred)
-                }, settings.timeout)
+                    if (settings.timeout > 0) abortTimeout = setTimeout(function () {
+                        xhr.onreadystatechange = empty
+                        xhr.abort()
+                        ajaxError(null, 'timeout', xhr, settings, deferred)
+                    }, settings.timeout)
 
-                // avoid sending empty string (#319)
-                xhr.send(settings.data ? settings.data : null)
-                return xhr
+                    // avoid sending empty string (#319)
+                    xhr.send(settings.data ? settings.data : null)
+                    return xhr
             }
 
             // handle optional data/success arguments
@@ -1741,8 +1742,8 @@
                 if (parts.length > 1) options.url = parts[0], selector = parts[1]
                 options.success = function (response) {
                     self.html(selector ?
-                        $('<div>').html(response.replace(rscript, "")).find(selector) :
-                        response)
+                              $('<div>').html(response.replace(rscript, "")).find(selector) :
+                              response)
                     callback && callback.apply(self, arguments)
                 }
                 $.ajax(options)
@@ -1757,14 +1758,14 @@
                 $.each(obj, function (key, value) {
                     type = $.type(value)
                     if (scope) key = traditional ? scope :
-                        scope + '[' + (hash || type == 'object' || type == 'array' ? key : '') + ']'
-                        // handle data in serializeArray() format
+                    scope + '[' + (hash || type == 'object' || type == 'array' ? key : '') + ']'
+                    // handle data in serializeArray() format
                     if (!scope && array) params.add(value.name, value.value)
-                        // recurse into nested objects
+                    // recurse into nested objects
                     else if (type == "array" || (!traditional && type == "object"))
                         serialize(params, value, traditional, key)
-                    else params.add(key, value)
-                })
+                        else params.add(key, value)
+                            })
             }
 
             $.param = function (obj, traditional) {
@@ -1796,7 +1797,7 @@
                         !field.disabled && type != 'submit' && type != 'reset' && type != 'button' && type != 'file' &&
                         ((type != 'radio' && type != 'checkbox') || field.checked))
                         add($(field).val())
-                })
+                        })
                 return result
             }
 
@@ -1814,7 +1815,7 @@
                     var event = $.Event('submit')
                     this.eq(0).trigger(event)
                     if (!event.isDefaultPrevented()) this.get(0).submit()
-                }
+                        }
                 return this
             }
 
@@ -1858,28 +1859,31 @@
         }
         var $article;
         switch (site.toString()) {
-        case "ifanr":
-            $article = $("article");
-            break;
-        case "xiaomi":
-            $article = $(".invitation_content")
-            break;
-        case "igao7":
-            $article = $(".content");
-            break;
-        case "weixin":
-            $article = $("#js_content");
-            break;
-        case "miui":
-            $article = $(".pct .t_f").eq(0);
-            $article.html($article.html().replace(/<br>/g, "<p>"));
-            break;
-        case "leiphone":
-            $article = $(".article-left").eq(0);
-            if($article.children().length<3){
-                $article=$article.children()[0];
-            }
-            break;
+            case "ifanr":
+                $article = $("article");
+                break;
+            case "xiaomi":
+                $article = $(".invitation_content")
+                break;
+            case "igao7":
+                $article = $(".content");
+                break;
+            case "weixin":
+                $article = $("#js_content");
+                break;
+            case "miui":
+                $article = $(".pct .t_f").eq(0);
+                $article.html($article.html().replace(/<br>/g, "<p>"));
+                break;
+            case "leiphone":
+                $article = $(".article-left").eq(0);
+                if($article.children().length<3){
+                    $article=$article.children()[0];
+                }
+                break;
+            case "cnbj0":
+                $article = $("body").eq(0);
+                break;
         }
         $article.find("script,link,style").remove();
 
@@ -2123,17 +2127,78 @@
                     });
                 }
             });
+        }else if (site.cnbj0) {
+            registerHandler("P", function ($dom) {
+                var text = $dom.text();
+                if (text) {
+                    output.push({
+                        name: "two_level_p",
+                        data: {
+                            data: text
+                        },
+                    });
+                }
+            });
+            registerHandler("div.zb-img", function ($dom) {
+                if ($dom.find("img").length) { //image
+                    $dom = $dom.find("img");
+                    var url = $dom.attr("src");
+                    output.push({
+                        name: "pic_link_full_default_empty_gap",
+                        data: {
+                            src: url
+                        }
+                    });
+                }
+            });
+            registerHandler("div.zb-line-title", function ($dom) {
+                var text = $dom.text();
+                if (text) {
+                    output.push({
+                        name: "corner_orange_title",
+                        data: {
+                            data: text
+                        },
+                    });
+                }
+            });
+            registerHandler("div#lead", function ($dom) {
+                var text = $dom.text();
+                if (text) {
+                    output.push({
+                        name: "zhaiyao2",
+                        data: {
+                            data: text
+                        },
+                    });
+                }
+            });
+            registerHandler("textarea", function ($dom) {
+            });
+            registerHandler(".theft-btn", function ($dom) {
+            });
         }
         $article.children().each(function () {
             var $dom = $(this);
-
-            if (handlers[$dom.prop("tagName")]) {
-                handlers[$dom.prop("tagName")]($dom);
+            var handler=handlers[$dom.prop("tagName")];
+            for(var i in handlers){
+                try{
+                if($dom.is(i)){
+                    handler=handlers[i];
+                }}catch(e){
+                    //nothing;
+                }
+            }
+            if (handler) {
+                handler($dom);
             } else {
                 commonOutput($dom);
             }
 
-        })
+        });
+        output.forEach(function(v){
+            v.random=Math.random();
+        });
 
         $(".theft-output").remove();
         var $output = $("<textarea style='position:fixed;left:0;top:0;height:300px;width:200px;' class='theft-output' />");
@@ -2146,40 +2211,47 @@
     var initStyle = ".theft-btn{display:block;padding:10px;border: 1px solid #e6e6e6;text-align:center;cursor:pointer;color:black;";
     var $btn = $("<a class='theft-btn' onclick='homeTheft()'>移植</a>");
     switch (site.toString()) {
-    case "ifanr":
-        initStyle += "background-color:white;}";
-        $(".c-related-articles").after($btn);
-        break;
-    case "xiaomi":
-        initStyle += "}";
-        $(".sidebar").append($btn);
-        break;
-    case "igao7":
-        initStyle += "position:absolute;left:0;right:0;}";
-        $(".gotoBar").append($btn);
-        break;
-    case "weixin":
-        initStyle += "display:inline-block;font-size: 17px;}";
-        $(".rich_media_meta_list").append($btn);
-        $btn.on("click", function () {
-            homeTheft();
-        });
-        break;
-    case "miui":
-        initStyle += "display:inline-block;font-size: 17px;padding-top:0px;padding-bottom:0px;font-size:16px;}";
-        $(".authi").append($btn);
-        $btn.on("click", function () {
-            a.html(a.html().replace(/<br>/g, "<p>"));
-            homeTheft();
-        });
-        break;
-    case "leiphone":
-        initStyle += "display:inline-block;font-size: 17px;padding-top:0px;padding-bottom:0px;font-size:16px;    width: 100%;box-sizing: border-box;background-color: white;line-height: 43px;}";
-        $(".article-right").append($btn);
-        $btn.on("click", function () {
-            homeTheft();
-        });
-        break;
+        case "ifanr":
+            initStyle += "background-color:white;}";
+            $(".c-related-articles").after($btn);
+            break;
+        case "xiaomi":
+            initStyle += "}";
+            $(".sidebar").append($btn);
+            break;
+        case "igao7":
+            initStyle += "position:absolute;left:0;right:0;}";
+            $(".gotoBar").append($btn);
+            break;
+        case "weixin":
+            initStyle += "display:inline-block;font-size: 17px;}";
+            $(".rich_media_meta_list").append($btn);
+            $btn.on("click", function () {
+                homeTheft();
+            });
+            break;
+        case "miui":
+            initStyle += "display:inline-block;font-size: 17px;padding-top:0px;padding-bottom:0px;font-size:16px;}";
+            $(".authi").append($btn);
+            $btn.on("click", function () {
+                a.html(a.html().replace(/<br>/g, "<p>"));
+                homeTheft();
+            });
+            break;
+        case "leiphone":
+            initStyle += "display:inline-block;font-size: 17px;padding-top:0px;padding-bottom:0px;font-size:16px;    width: 100%;box-sizing: border-box;background-color: white;line-height: 43px;}";
+            $(".article-right").append($btn);
+            $btn.on("click", function () {
+                homeTheft();
+            });
+            break;
+        case "cnbj0":
+            initStyle += "position:fixed;left:10px;bottom:10px;}";
+            $("body").append($btn);
+            $btn.on("click", function () {
+                homeTheft();
+            });
+            break;
     }
     GM_addStyle(initStyle);
     // Your code here...
