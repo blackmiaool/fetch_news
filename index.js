@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      0.23
+// @version      0.24
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -2061,6 +2061,9 @@ console.log($dom);
                     });
                 } else {
                     if ($dom.find("*").length > 1) {
+                        if(!$dom.text()){
+                            return;
+                        }
                         $dom.find("*").css({
                             "font-size": "16px",
                             "line-height": "28.8px"
