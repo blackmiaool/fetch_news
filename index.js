@@ -13,6 +13,7 @@
 // @include      https://www.miui.com/*
 // @include      http://www.leiphone.com/*
 // @include      https://www.leiphone.com/*
+// @include      http://cdn.cnbj0.fds.api.mi-img.com/*
 // @include      https://cdn.cnbj0.fds.api.mi-img.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
@@ -1873,6 +1874,7 @@
                 break;
             case "miui":
                 $article = $(".pct .t_f").eq(0);
+                $article.find(".aimg_tip").remove();
                 $article.html($article.html().replace(/<br>/g, "<p>"));
                 break;
             case "leiphone":
@@ -2033,9 +2035,12 @@
             });
         } else if (site.miui) {
             registerHandler("BR", function ($dom) {});
-
-            registerHandler("P", function ($dom) {
+            registerHandler("P", handler);
+            registerHandler("DIV", handler);
+            registerHandler("FONT", handler);
+            function handler($dom) {
                 if ($dom.find("img").length) { //image
+console.log($dom);
                     $dom = $dom.find("img");
                     var urlRaw = $dom.attr("zoomfile");
                     var url = urlRaw
@@ -2080,7 +2085,8 @@
 
 
                 }
-            });
+            }
+            
         } else if (site.leiphone) {
             registerHandler("P", function ($dom) {
                 if ($dom.find("img").length) { //image
