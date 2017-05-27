@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      7
+// @version      8
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -2328,8 +2328,11 @@ unsafeWindow.homeTheft = function () {
     }
     var $article;
     $article = sourceConfig.getArticle();
+    if(!$article.length){
+        alert("找不到文章， 请联系维护者");
+        return;
+    }
     $article.find("script,link,style").remove();
-    console.log(3331)
 
     function commonOutput($dom) {
         var html = $dom[0].outerHTML;
