@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      8
+// @version      9
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -464,7 +464,7 @@
 }
 ,'zaeke':{
     getArticle: function () {
-        const $article = $("#article_content");
+        const $article = $("#article_content,td.t_f");
         return $article;
     },
     handle: function ({
