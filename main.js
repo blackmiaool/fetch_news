@@ -19,10 +19,36 @@ unsafeWindow.homeTheft = function () {
     }
     var $article;
     $article = sourceConfig.getArticle();
-    if(!$article.length){
+    if (!$article.length) {
         alert("找不到文章， 请联系维护者");
         return;
     }
+    
+    const blackList=['width','height','id','aid'];
+
+    function attrFilter(name){
+        if(name.match(/^on/)){
+            return true;
+        }
+
+        if(blackList.indexOf(name)>-1){
+            return true;
+        }
+    }
+    $article.find("*").each(function(){
+        const $dom=$(this);        
+        const attributes=this.attributes;
+        const queue=[];
+        for(const i in attributes){
+            if(attributes[i]&&attributes[i].name&&attrFilter(attributes[i].name)){
+                queue.push(attributes[i].name);                
+            }
+        }
+        queue.forEach(function(name){
+            $dom.removeAttr(name);
+        });
+    });
+
     $article.find("script,link,style").remove();
 
     function commonOutput($dom) {
@@ -127,8 +153,7 @@ unsafeWindow.homeTheft = function () {
 
     children = children.map(function (child) {
         if (child.nodeType === 1) {
-            const $dom = $(child);
-            console.log($dom.find("img").length, singleSonUntil($dom.find("img"), $dom))
+            const $dom = $(child);            
             if ($dom.find("img").length === 1 && singleSonUntil($dom.find("img"), $dom)) {
                 return $dom.find("img")[0]
             }
