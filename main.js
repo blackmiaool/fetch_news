@@ -12,8 +12,12 @@ unsafeWindow.homeTheft = function () {
         output.push({
             name: "article_page_header",
             data: {
-                src: $("#article-header,.c-article-header").css("background-image").match(/"([^\"]*)"/)[1],
-                content: $("#article-header").find(".c-single-normal__title").text()
+                src: $("#article-header,.c-article-header")
+                    .css("background-image")
+                    .match(/"([^\"]*)"/)[1],
+                content: $("#article-header")
+                    .find(".c-single-normal__title")
+                    .text()
             }
         });
     }
@@ -23,33 +27,38 @@ unsafeWindow.homeTheft = function () {
         alert("找不到文章， 请联系维护者");
         return;
     }
-    
-    const blackList=['width','height','id','aid'];
 
-    function attrFilter(name){
-        if(name.match(/^on/)){
+    const blackList = ['width', 'height', 'id', 'aid'];
+
+    function attrFilter(name) {
+        if (name.match(/^on/)) {
             return true;
         }
 
-        if(blackList.indexOf(name)>-1){
+        if (blackList.indexOf(name) > -1) {
             return true;
         }
     }
-    $article.find("*").each(function(){
-        const $dom=$(this);        
-        const attributes=this.attributes;
-        const queue=[];
-        for(const i in attributes){
-            if(attributes[i]&&attributes[i].name&&attrFilter(attributes[i].name)){
-                queue.push(attributes[i].name);                
+    $article
+        .find("*")
+        .each(function () {
+            const $dom = $(this);
+            const attributes = this.attributes;
+            const queue = [];
+            for (const i in attributes) {
+                if (attributes[i] && attributes[i].name && attrFilter(attributes[i].name)) {
+                    queue.push(attributes[i].name);
+                }
             }
-        }
-        queue.forEach(function(name){
-            $dom.removeAttr(name);
+            queue
+                .forEach(function (name) {
+                    $dom.removeAttr(name);
+                });
         });
-    });
 
-    $article.find("script,link,style").remove();
+    $article
+        .find("script,link,style")
+        .remove();
 
     function commonOutput($dom) {
         var html = $dom[0].outerHTML;
@@ -58,7 +67,7 @@ unsafeWindow.homeTheft = function () {
                 name: "common",
                 data: {
                     data: html
-                },
+                }
             });
         }
     }
@@ -66,10 +75,7 @@ unsafeWindow.homeTheft = function () {
     var handlers = [];
 
     function registerHandler(selector, handler) {
-        handlers.push({
-            selector,
-            handler
-        });
+        handlers.push({selector, handler});
     }
     registerHandler("H2", function ($dom) {
         var text = $dom.text();
@@ -78,18 +84,19 @@ unsafeWindow.homeTheft = function () {
                 name: "one_level_p",
                 data: {
                     data: text
-                },
+                }
             });
         }
     });
-
-
 
     registerHandler(function ($dom) {
         if (!$dom.is("p")) {
             return;
         }
-        const children = Array.prototype.slice.call($dom[0].childNodes);
+        const children = Array
+            .prototype
+            .slice
+            .call($dom[0].childNodes);
         return children.some(function (child) {
             return child.nodeType === 3;
         });
@@ -97,8 +104,10 @@ unsafeWindow.homeTheft = function () {
         return {
             name: "two_level_p",
             data: {
-                data: $dom.html().replace(/<br>/g, "")
-            },
+                data: $dom
+                    .html()
+                    .replace(/<br>/g, "")
+            }
         };
     });
 
@@ -108,23 +117,19 @@ unsafeWindow.homeTheft = function () {
                 name: "two_level_p",
                 data: {
                     data: text
-                },
+                }
             });
         }
     });
 
-
-
     if (sourceConfig.handle) {
-        sourceConfig.handle({
-            registerHandler,
-            output,
-            commonOutput
-        });
+        sourceConfig.handle({registerHandler, output, commonOutput});
     }
 
-
-    let children = Array.prototype.slice.call($article[0].childNodes);
+    let children = Array
+        .prototype
+        .slice
+        .call($article[0].childNodes);
 
     children = children.filter(function (v) {
         const $dom = $(v);
@@ -142,7 +147,9 @@ unsafeWindow.homeTheft = function () {
 
         if (v.nodeType === 1) {
             const $dom = $(v);
-            const text = $dom.text().replace(/\s|\n/g, "");
+            const text = $dom
+                .text()
+                .replace(/\s|\n/g, "");
             if (!$dom.find("img").length && !text.length && $dom.height() < 100) {
                 return false;
             }
@@ -150,10 +157,9 @@ unsafeWindow.homeTheft = function () {
         return true;
     });
 
-
     children = children.map(function (child) {
         if (child.nodeType === 1) {
-            const $dom = $(child);            
+            const $dom = $(child);
             if ($dom.find("img").length === 1 && singleSonUntil($dom.find("img"), $dom)) {
                 return $dom.find("img")[0]
             }
@@ -179,21 +185,16 @@ unsafeWindow.homeTheft = function () {
         return {
             name: "pic_link_full_default_empty_gap",
             data: {
-                src: $dom.attr("src") || $dom.data("src")
+                src: $dom.data("original") || $dom.attr("src") || $dom.data("src")
             }
         }
     });
 
-
     children.forEach(function (v) {
-
 
         var $dom = $(v);
         let handled = false;
-        handlers.some(function ({
-            selector,
-            handler
-        }) {
+        handlers.some(function ({selector, handler}) {
             let ret;
             if (selector === 'text' && v.nodeType === 3) {
                 ret = handler(v.nodeValue.replace(/^\n/, "").replace(/\n$/, ""));
@@ -220,25 +221,14 @@ unsafeWindow.homeTheft = function () {
             commonOutput($dom);
         }
         //
-        //        var handler = handlers[$dom.prop("tagName")];
-        //        for (var i in handlers) {
-        //            try {
-        //                if ($dom.is(i)) {
-        //                    handler = handlers[i];
-        //                }
-        //            } catch (e) {
-        //                //nothing;
-        //            }
-        //        }
-        //        if (handler) {
-        //            const ret = handler($dom);
-        //            if (ret) {
-        //                output.push(ret);
-        //            }
+        //        var handler = handlers[$dom.prop("tagName")];        for (var i in
+        // handlers) {            try {                if ($dom.is(i)) {
+        //    handler = handlers[i];                }            } catch (e) {
+        //      //nothing;            }        }        if (handler) {            const
+        // ret = handler($dom);            if (ret) {                output.push(ret);
+        //          }
         //
-        //        } else {
-        //            commonOutput($dom);
-        //        }
+        //        } else {            commonOutput($dom);        }
 
     });
     output.forEach(function (v) {
@@ -246,13 +236,14 @@ unsafeWindow.homeTheft = function () {
     });
 
     $(".theft-output").remove();
-    var $output = $("<textarea style='position:fixed;left:0;top:0;height:300px;width:200px;z-index:100000;' class='theft-output' />");
+    var $output = $("<textarea style='position:fixed;left:0;top:0;height:300px;width:200px;z-index:10" +
+            "0000;' class='theft-output' />");
     $output.val(JSON.stringify(output));
     $(document.body).append($output);
 
 };
 console.log(1323)
-    //add trigger btn
+//add trigger btn
 const initStyle = `.theft-btn{
     display: block;
     padding: 10px;

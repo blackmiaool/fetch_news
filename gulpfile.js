@@ -9,15 +9,16 @@ const fs = require("fs");
 const treeify = require('file-tree-sync');
 const sites = treeify(path.join(__dirname, 'sites'), ['.*']);
 
-
 fs.readFileAsync = function (filename) {
     return new Promise(function (resolve, reject) {
-        fs.readFile(filename, function (err, data) {
-            if (err)
-                reject(err);
-            else
-                resolve(data);
-        });
+        fs
+            .readFile(filename, function (err, data) {
+                if (err) 
+                    reject(err);
+                else 
+                    resolve(data);
+                }
+            );
     });
 };
 
@@ -42,6 +43,8 @@ const comment = `// ==UserScript==
 // @include      https://cdn.cnbj0.fds.api.mi-img.com/*
 // @include      https://www.dgtle.com/*
 // @include      http://www.dgtle.com/*
+// @include      https://bbs.dgtle.com/*
+// @include      http://bbs.dgtle.com/*
 // @include      http://www.zaeke.com/*
 // @include      https://www.zaeke.com/*
 // @include      http://www.leikeji.com/*
@@ -56,48 +59,58 @@ const comment = `// ==UserScript==
 gulp.task('default', function () {
     const filesQueue = [];
     console.log("default");
-    const version = fs.readFileSync("index.js").toString().match(/version\s+(\d+)/)[1];
+    const version = fs
+        .readFileSync("index.js")
+        .toString()
+        .match(/version\s+(\d+)/)[1];
     console.log('version', version);
     setTimeout(function () {
 
-        sites.forEach(function (v) {
-            filesQueue.push(fs.readFileAsync(v.fullpath));
-        });
-        let fullCode = `var sites={`;
-        Promise.all(filesQueue).then(function (result) {
-
-            result = result.forEach(function (v, i) {
-                const code = v.toString();
-                const name = sites[i].name.match(/^\w+(?=\.)/)[0];
-
-                fullCode += `'${name}':${code},`;
+        sites
+            .forEach(function (v) {
+                filesQueue.push(fs.readFileAsync(v.fullpath));
             });
-            fullCode += `};\n`;
-            console.log('f', fullCode.length)
-            gulp.src(['zepto.js', 'main.js'])
-                .pipe(concat("index.js"))
-                .pipe(headerfooter({
-                    header: "!(function(){" + fullCode,
-                    footer: "})();",
-                    filter: function () {
-                        return true;
-                    }
-                }))
-                .pipe(banner(comment, {
-                    version: version * 1 + 1
-                }))
-                .pipe(gulp.dest('./'))
+        let fullCode = `var sites={`;
+        Promise
+            .all(filesQueue)
+            .then(function (result) {
+
+                result = result.forEach(function (v, i) {
+                    const code = v.toString();
+                    const name = sites[i]
+                        .name
+                        .match(/^\w+(?=\.)/)[0];
+
+                    fullCode += `'${name}':${code},`;
+                });
+                fullCode += `};\n`;
+                console.log('f', fullCode.length)
+                gulp
+                    .src(['zepto.js', 'main.js'])
+                    .pipe(concat("index.js"))
+                    .pipe(headerfooter({
+                        header: "!(function(){" + fullCode,
+                        footer: "})();",
+                        filter: function () {
+                            return true;
+                        }
+                    }))
+                    .pipe(banner(comment, {
+                        version: version * 1 + 1
+                    }))
+                    .pipe(gulp.dest('./'))
                 //            .pipe(livereload())
-        });
+            });
     }, 500);
-
-
 
 });
 
 gulp.task('reload', function () {
-    gulp.src("")
+    gulp
+        .src("")
         .pipe(livereload());
 });
 livereload.listen();
-gulp.watch(["sites/*", './*.js', '!./index.js'], ['default']);
+gulp.watch([
+    "sites/*", './*.js', '!./index.js'
+], ['default']);

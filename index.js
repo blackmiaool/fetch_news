@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      25
+// @version      54
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -19,6 +19,8 @@
 // @include      https://cdn.cnbj0.fds.api.mi-img.com/*
 // @include      https://www.dgtle.com/*
 // @include      http://www.dgtle.com/*
+// @include      https://bbs.dgtle.com/*
+// @include      http://bbs.dgtle.com/*
 // @include      http://www.zaeke.com/*
 // @include      https://www.zaeke.com/*
 // @include      http://www.leikeji.com/*
@@ -90,18 +92,56 @@
 ,'dgtle':{
     getArticle: function () {
         const $article = $("#view_content");
-        $article.find("div").each(function () {
-            if($(this).children().length){
-                $(this).replaceWith($(this).children());    
-            }            
-        });
-        return $("#view_content");
+        let ret;
+        $article
+            .find("div")
+            .each(function () {
+                if ($(this).children().length) {
+                    $(this).replaceWith($(this).children());
+                }
+            });
+        if (!$("#view_content").length) {
+            ret = $(".group_viewbox_body .pcb");
+        } else {
+            ret = $("#view_content");
+        }
+
+        let found = true;
+
+        ret
+            .find("div")
+            .each(function () {
+                if ($(this).html().length < 5) {
+                    $(this).remove();
+                }
+            });
+        console.log("c");
+
+        while (found) {
+            found = false;
+            ret
+                .find("*")
+                .each(function () {
+                    const $dom = $(this);
+                    if ($dom.children().length === 1 && $dom.html().length < $dom.children()[0].outerHTML.length + 5) {
+                        $dom[0].outerHTML = $dom[0].innerHTML;
+                        found = true;
+                    }
+                });
+        }
+        ret
+            .find("td")
+            .each(function () {
+                const $dom = $(this);
+                console.log("b");
+                console.log($dom.closest("table").length)
+                if (!$dom.closest("table").length) {
+                    $dom.outerHTML = $dom.innerHTML;
+                }
+            });
+        return ret;
     },
-    handle: function ({
-        registerHandler,
-        output,
-        commonOutput
-    }) {
+    handle: function ({registerHandler, output, commonOutput}) {
         registerHandler("A", function ($dom) {
             if ($dom.find("img").length) { //image
                 $dom = $dom.find("img");
@@ -125,8 +165,7 @@
             }
         });
     }
-}
-,'ifanr':{
+},'ifanr':{
     getArticle: function () {
         return $("article");
     },
@@ -384,13 +423,10 @@
     getArticle: function () {
         return $("#js_content");
     },
-    handle: function ({
-        registerHandler,
-        output,
-        commonOutput
-    }) {
+    handle: function ({ registerHandler, output, commonOutput }) {
         registerHandler("P", function ($dom) {
-            if ($dom.find("img").length) { //image
+            if ($dom.find("img")
+                .length) { //image
                 $dom = $dom.find("img");
                 var url = $dom.data("src");
                 output.push({
@@ -400,15 +436,11 @@
                     }
                 });
             } else {
-                if ($dom.find("*").length > 1) {
-                    $dom.find("*").css({
-                        "font-size": "16px",
-                        "line-height": "28.8px"
-                    });
-                    $dom.css({
-                        "font-size": "16px",
-                        "line-height": "28.8px"
-                    });
+                if ($dom.find("*")
+                    .length > 1) {
+                    $dom.find("*")
+                        .css({ "font-size": "16px", "line-height": "28.8px" });
+                    $dom.css({ "font-size": "16px", "line-height": "28.8px" });
                     commonOutput($dom);
                 } else {
                     var text = $dom.text();
@@ -417,12 +449,10 @@
                             name: "two_level_p",
                             data: {
                                 data: text
-                            },
+                            }
                         });
                     }
                 }
-
-
 
             }
         });
@@ -432,37 +462,33 @@
     getArticle: function () {
         return $(".invitation_content");
     },
-    handle: function ({
-        registerHandler,
-        output,
-        commonOutput
-    }) {
+    handle: function ({registerHandler, output, commonOutput}) {
         registerHandler("P", function ($dom) {
             if ($dom.find("[dateline]").length) { //image
+
                 $dom = $dom.find("[dateline]");
                 var url = $dom.data("original");
-                output.push({
+                return {
                     name: "pic_link_full_default_empty_gap",
                     data: {
                         src: url
                     }
-                });
+                };
             } else {
                 var text = $dom.text();
                 if (text) {
-                    output.push({
+                    return {
                         name: "two_level_p",
                         data: {
                             data: text
-                        },
-                    });
+                        }
+                    };
                 }
 
             }
         });
     }
-}
-,'zaeke':{
+},'zaeke':{
     getArticle: function () {
         const $article = $("#article_content,td.t_f");
         return $article;
@@ -2321,8 +2347,12 @@ unsafeWindow.homeTheft = function () {
         output.push({
             name: "article_page_header",
             data: {
-                src: $("#article-header,.c-article-header").css("background-image").match(/"([^\"]*)"/)[1],
-                content: $("#article-header").find(".c-single-normal__title").text()
+                src: $("#article-header,.c-article-header")
+                    .css("background-image")
+                    .match(/"([^\"]*)"/)[1],
+                content: $("#article-header")
+                    .find(".c-single-normal__title")
+                    .text()
             }
         });
     }
@@ -2332,33 +2362,38 @@ unsafeWindow.homeTheft = function () {
         alert("找不到文章， 请联系维护者");
         return;
     }
-    
-    const blackList=['width','height','id','aid'];
 
-    function attrFilter(name){
-        if(name.match(/^on/)){
+    const blackList = ['width', 'height', 'id', 'aid'];
+
+    function attrFilter(name) {
+        if (name.match(/^on/)) {
             return true;
         }
 
-        if(blackList.indexOf(name)>-1){
+        if (blackList.indexOf(name) > -1) {
             return true;
         }
     }
-    $article.find("*").each(function(){
-        const $dom=$(this);        
-        const attributes=this.attributes;
-        const queue=[];
-        for(const i in attributes){
-            if(attributes[i]&&attributes[i].name&&attrFilter(attributes[i].name)){
-                queue.push(attributes[i].name);                
+    $article
+        .find("*")
+        .each(function () {
+            const $dom = $(this);
+            const attributes = this.attributes;
+            const queue = [];
+            for (const i in attributes) {
+                if (attributes[i] && attributes[i].name && attrFilter(attributes[i].name)) {
+                    queue.push(attributes[i].name);
+                }
             }
-        }
-        queue.forEach(function(name){
-            $dom.removeAttr(name);
+            queue
+                .forEach(function (name) {
+                    $dom.removeAttr(name);
+                });
         });
-    });
 
-    $article.find("script,link,style").remove();
+    $article
+        .find("script,link,style")
+        .remove();
 
     function commonOutput($dom) {
         var html = $dom[0].outerHTML;
@@ -2367,7 +2402,7 @@ unsafeWindow.homeTheft = function () {
                 name: "common",
                 data: {
                     data: html
-                },
+                }
             });
         }
     }
@@ -2375,10 +2410,7 @@ unsafeWindow.homeTheft = function () {
     var handlers = [];
 
     function registerHandler(selector, handler) {
-        handlers.push({
-            selector,
-            handler
-        });
+        handlers.push({selector, handler});
     }
     registerHandler("H2", function ($dom) {
         var text = $dom.text();
@@ -2387,18 +2419,19 @@ unsafeWindow.homeTheft = function () {
                 name: "one_level_p",
                 data: {
                     data: text
-                },
+                }
             });
         }
     });
-
-
 
     registerHandler(function ($dom) {
         if (!$dom.is("p")) {
             return;
         }
-        const children = Array.prototype.slice.call($dom[0].childNodes);
+        const children = Array
+            .prototype
+            .slice
+            .call($dom[0].childNodes);
         return children.some(function (child) {
             return child.nodeType === 3;
         });
@@ -2406,8 +2439,10 @@ unsafeWindow.homeTheft = function () {
         return {
             name: "two_level_p",
             data: {
-                data: $dom.html().replace(/<br>/g, "")
-            },
+                data: $dom
+                    .html()
+                    .replace(/<br>/g, "")
+            }
         };
     });
 
@@ -2417,23 +2452,19 @@ unsafeWindow.homeTheft = function () {
                 name: "two_level_p",
                 data: {
                     data: text
-                },
+                }
             });
         }
     });
 
-
-
     if (sourceConfig.handle) {
-        sourceConfig.handle({
-            registerHandler,
-            output,
-            commonOutput
-        });
+        sourceConfig.handle({registerHandler, output, commonOutput});
     }
 
-
-    let children = Array.prototype.slice.call($article[0].childNodes);
+    let children = Array
+        .prototype
+        .slice
+        .call($article[0].childNodes);
 
     children = children.filter(function (v) {
         const $dom = $(v);
@@ -2451,7 +2482,9 @@ unsafeWindow.homeTheft = function () {
 
         if (v.nodeType === 1) {
             const $dom = $(v);
-            const text = $dom.text().replace(/\s|\n/g, "");
+            const text = $dom
+                .text()
+                .replace(/\s|\n/g, "");
             if (!$dom.find("img").length && !text.length && $dom.height() < 100) {
                 return false;
             }
@@ -2459,10 +2492,9 @@ unsafeWindow.homeTheft = function () {
         return true;
     });
 
-
     children = children.map(function (child) {
         if (child.nodeType === 1) {
-            const $dom = $(child);            
+            const $dom = $(child);
             if ($dom.find("img").length === 1 && singleSonUntil($dom.find("img"), $dom)) {
                 return $dom.find("img")[0]
             }
@@ -2488,21 +2520,16 @@ unsafeWindow.homeTheft = function () {
         return {
             name: "pic_link_full_default_empty_gap",
             data: {
-                src: $dom.attr("src") || $dom.data("src")
+                src: $dom.data("original") || $dom.attr("src") || $dom.data("src")
             }
         }
     });
 
-
     children.forEach(function (v) {
-
 
         var $dom = $(v);
         let handled = false;
-        handlers.some(function ({
-            selector,
-            handler
-        }) {
+        handlers.some(function ({selector, handler}) {
             let ret;
             if (selector === 'text' && v.nodeType === 3) {
                 ret = handler(v.nodeValue.replace(/^\n/, "").replace(/\n$/, ""));
@@ -2529,25 +2556,14 @@ unsafeWindow.homeTheft = function () {
             commonOutput($dom);
         }
         //
-        //        var handler = handlers[$dom.prop("tagName")];
-        //        for (var i in handlers) {
-        //            try {
-        //                if ($dom.is(i)) {
-        //                    handler = handlers[i];
-        //                }
-        //            } catch (e) {
-        //                //nothing;
-        //            }
-        //        }
-        //        if (handler) {
-        //            const ret = handler($dom);
-        //            if (ret) {
-        //                output.push(ret);
-        //            }
+        //        var handler = handlers[$dom.prop("tagName")];        for (var i in
+        // handlers) {            try {                if ($dom.is(i)) {
+        //    handler = handlers[i];                }            } catch (e) {
+        //      //nothing;            }        }        if (handler) {            const
+        // ret = handler($dom);            if (ret) {                output.push(ret);
+        //          }
         //
-        //        } else {
-        //            commonOutput($dom);
-        //        }
+        //        } else {            commonOutput($dom);        }
 
     });
     output.forEach(function (v) {
@@ -2555,13 +2571,14 @@ unsafeWindow.homeTheft = function () {
     });
 
     $(".theft-output").remove();
-    var $output = $("<textarea style='position:fixed;left:0;top:0;height:300px;width:200px;z-index:100000;' class='theft-output' />");
+    var $output = $("<textarea style='position:fixed;left:0;top:0;height:300px;width:200px;z-index:10" +
+            "0000;' class='theft-output' />");
     $output.val(JSON.stringify(output));
     $(document.body).append($output);
 
 };
 console.log(1323)
-    //add trigger btn
+//add trigger btn
 const initStyle = `.theft-btn{
     display: block;
     padding: 10px;
