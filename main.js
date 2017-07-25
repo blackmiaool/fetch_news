@@ -263,7 +263,8 @@ const initStyle = `.theft-btn{
     line-height: 26px;
 font-size:16px;
 }`;
-var $btn = $("<a class='theft-btn' onclick='homeTheft()'>移植</a>");
+var $btn = $("<a class='theft-btn'>移植</a>");
+$btn.on('click',homeTheft);
 $(document.body).append($btn);
 
 GM_addStyle(initStyle);
