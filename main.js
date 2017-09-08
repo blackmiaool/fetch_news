@@ -182,10 +182,17 @@ unsafeWindow.homeTheft = function () {
         };
     });
     registerHandler("img", function ($dom) {
+        let src= $dom.data("original") || $dom.attr("src") || $dom.data("src");
+        if(!src){
+            return ;
+        }
+        if(src.startsWith("/")){
+            src=location.origin+src;
+        }
         return {
             name: "pic_link_full_default_empty_gap",
             data: {
-                src: $dom.data("original") || $dom.attr("src") || $dom.data("src")
+                src
             }
         }
     });

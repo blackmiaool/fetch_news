@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      55
+// @version      67
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -27,6 +27,7 @@
 // @include      https://www.leikeji.com/*
 // @include      http://www.toutiao.com/*
 // @include      https://www.toutiao.com/*
+// @include      http://www.techmiao.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
 // ==/UserScript==
@@ -391,6 +392,36 @@
 
             }
         }
+    }
+}
+,'techmiao':{
+    getArticle: function () {
+        const $article = $("#zengarticlecontent");
+        $article.find("p").each(function(){
+            const $dom=$(this);
+            if($dom.attr("style")){
+                $dom.attr("style",$dom.attr("style").replace(/background[^;]+;/,""));
+            }
+        });
+        $article.find(`[style="text-align: center;height: 30px;"]`).remove();
+        return $article;
+    },
+    handle: function ({
+        registerHandler,
+        output,
+        commonOutput
+    }) {
+        // registerHandler(function ($dom) {
+        //     const ret = $dom.attr("align") === "left" && $dom.text().length && !$dom.find("img").length;
+        //     return ret;
+        // }, function ($dom) {
+        //     return {
+        //         name: "two_level_p",
+        //         data: {
+        //             data: $dom.text()
+        //         },
+        //     }
+        // })
     }
 }
 ,'toutiao':{
@@ -2517,10 +2548,17 @@ unsafeWindow.homeTheft = function () {
         };
     });
     registerHandler("img", function ($dom) {
+        let src= $dom.data("original") || $dom.attr("src") || $dom.data("src");
+        if(!src){
+            return ;
+        }
+        if(src.startsWith("/")){
+            src=location.origin+src;
+        }
         return {
             name: "pic_link_full_default_empty_gap",
             data: {
-                src: $dom.data("original") || $dom.attr("src") || $dom.data("src")
+                src
             }
         }
     });

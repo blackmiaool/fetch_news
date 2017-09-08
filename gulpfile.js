@@ -51,6 +51,7 @@ const comment = `// ==UserScript==
 // @include      https://www.leikeji.com/*
 // @include      http://www.toutiao.com/*
 // @include      https://www.toutiao.com/*
+// @include      http://www.techmiao.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
 // ==/UserScript==
