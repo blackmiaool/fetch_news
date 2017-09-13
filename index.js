@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      67
+// @version      73
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -92,7 +92,7 @@
 }
 ,'dgtle':{
     getArticle: function () {
-        const $article = $("#view_content");
+        const $article = $("#view_content,.view_content"); 
         let ret;
         $article
             .find("div")
@@ -101,10 +101,10 @@
                     $(this).replaceWith($(this).children());
                 }
             });
-        if (!$("#view_content").length) {
+        if (!$article.length) {
             ret = $(".group_viewbox_body .pcb");
         } else {
-            ret = $("#view_content");
+            ret = $article;
         }
 
         let found = true;
