@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      73
+// @version      74
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -2547,14 +2547,24 @@ unsafeWindow.homeTheft = function () {
             }
         };
     });
+    function handleSrc(src){
+        if(src.match(/^\/\//)){
+            src=location.protocol+src;
+        }
+        if(src.match(/^\/\w/)){
+            src=location.origin+src;
+        }
+        if(src.match(/^(?!h)\w/)){
+            src=location.origin+location.pathname.replace(/\/.+?$/,"\/")+src;
+        }
+        return src;
+    }
     registerHandler("img", function ($dom) {
         let src= $dom.data("original") || $dom.attr("src") || $dom.data("src");
         if(!src){
             return ;
         }
-        if(src.startsWith("/")){
-            src=location.origin+src;
-        }
+        src=handleSrc(src);
         return {
             name: "pic_link_full_default_empty_gap",
             data: {
