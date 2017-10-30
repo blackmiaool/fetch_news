@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      74
+// @version      83
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -28,6 +28,8 @@
 // @include      http://www.toutiao.com/*
 // @include      https://www.toutiao.com/*
 // @include      http://www.techmiao.com/*
+// @include      http://s1.mi.com/*
+// @include      https://s1.mi.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
 // ==/UserScript==
@@ -319,6 +321,51 @@
                 });
             }
         });
+    }
+}
+,'mi':{
+    getArticle: function () {
+        const $article = $(".w-e-text").eq(0);
+        $article.find('.preview-image').each((i, dom) => {
+            const $dom = $(dom);
+            $dom.replaceWith($dom.find('img'));
+        });
+        $article.find("*").each((i, dom) => {
+            const $dom = $(dom);
+            const size=$dom.css('font-size');
+            if(size.includes('rem')){
+                $dom.css('font-size','');
+            }
+        });
+        return $article;
+    },
+    handle: function ({
+        registerHandler,
+        output,
+        commonOutput
+    }) {
+        registerHandler(function ($dom) {
+            let ret;
+            if ($dom.prop('tagName') !== 'P') {
+                ret = false;
+            }
+            if ($dom.children().prop('tagName') === 'SPAN' && !$dom.children().children().length) {
+                ret = $dom.text().length > 3;
+            }
+            console.log($dom.text(),ret);
+            return ret;
+
+        }, function ($dom) {
+            return {
+                name: "two_level_p",
+                data: {
+                    data: $dom
+                        .text()
+                        .replace(/<br>/g, "")
+                }
+            };
+        })
+
     }
 }
 ,'miui':{

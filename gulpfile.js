@@ -52,6 +52,8 @@ const comment = `// ==UserScript==
 // @include      http://www.toutiao.com/*
 // @include      https://www.toutiao.com/*
 // @include      http://www.techmiao.com/*
+// @include      http://s1.mi.com/*
+// @include      https://s1.mi.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
 // ==/UserScript==
