@@ -1,6 +1,6 @@
 {
     getArticle: function () {
-        const $article = $("#article_content,td.t_f");
+        const $article = $(".article_detail");
         return $article;
     },
     handle: function ({
