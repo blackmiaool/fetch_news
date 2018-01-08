@@ -121,6 +121,15 @@ unsafeWindow.homeTheft = function () {
             });
         }
     });
+    registerHandler("VIDEO", function ($dom) {
+        return {
+            name: "video",
+            data: {
+                src: $dom.attr('src'),
+                poster: $dom.attr('poster'),
+            }
+        };
+    });
 
     if (sourceConfig.handle) {
         sourceConfig.handle({registerHandler, output, commonOutput});

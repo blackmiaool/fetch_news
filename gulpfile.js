@@ -54,6 +54,8 @@ const comment = `// ==UserScript==
 // @include      http://www.techmiao.com/*
 // @include      http://s1.mi.com/*
 // @include      https://s1.mi.com/*
+// @include      http://share.xk.miui.com/*
+// @include      https://share.xk.miui.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
 // ==/UserScript==

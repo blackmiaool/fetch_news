@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetch News
 // @namespace    http://tampermonkey.net/
-// @version      83
+// @version      87
 // @description  try to take over the world!
 // @author       You
 // @include      http://www.ifanr.com/*
@@ -30,6 +30,8 @@
 // @include      http://www.techmiao.com/*
 // @include      http://s1.mi.com/*
 // @include      https://s1.mi.com/*
+// @include      http://share.xk.miui.com/*
+// @include      https://share.xk.miui.com/*
 // @grant        GM_addStyle
 // @grant        unsafeWindow
 // ==/UserScript==
@@ -566,9 +568,18 @@
             }
         });
     }
+},'xk':{
+    getArticle: function () {
+        const $article=$(".plyr__video-wrapper");
+        $article.find("*:not(video)").remove();
+        return $article;
+    },
+    handle: function ({registerHandler, output, commonOutput}) {
+
+    }
 },'zaeke':{
     getArticle: function () {
-        const $article = $("#article_content,td.t_f");
+        const $article = $(".article_detail");
         return $article;
     },
     handle: function ({
@@ -2533,6 +2544,15 @@ unsafeWindow.homeTheft = function () {
                 }
             });
         }
+    });
+    registerHandler("VIDEO", function ($dom) {
+        return {
+            name: "video",
+            data: {
+                src: $dom.attr('src'),
+                poster: $dom.attr('poster'),
+            }
+        };
     });
 
     if (sourceConfig.handle) {
